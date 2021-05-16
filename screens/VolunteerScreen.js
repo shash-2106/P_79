@@ -3,29 +3,29 @@ import { View, StyleSheet, Text, FlatList,TouchableOpacity } from 'react-native'
 import { ListItem } from 'react-native-elements'
 import firebase from 'firebase';
 import db from '../config'
-import MyHeader from '../Component/MyHeader';
 
-export default class BookDonateScreen extends Component{
+
+export default class VolunteerScreen extends Component{
   constructor(){
     super()
     this.state = {
-      requestedBooksList : []
+     donationList : []
     }
   this.requestRef= null
   }
 
-  getRequestedBooksList =()=>{
-    this.requestRef = db.collection("requested_books")
+  getDonationsList =()=>{
+    this.requestRef = db.collection("donations")
     .onSnapshot((snapshot)=>{
-      var requestedBooksList = snapshot.docs.map(document => document.data());
+      var donation_list = snapshot.docs.map(document => document.data());
       this.setState({
-        requestedBooksList : requestedBooksList
+        donationList : donation_list
       });
     })
   }
 
   componentDidMount(){
-    this.getRequestedBooksList()
+    this.getDonationsList()
   }
 
   componentWillUnmount(){
@@ -38,11 +38,11 @@ export default class BookDonateScreen extends Component{
     return (
       <ListItem
         key={i}
-        title={item.book_name}
-        subtitle={item.reason_to_request}
+        title={item.item_name}
+        subtitle={item.cost}
         titleStyle={{ color: 'black', fontWeight: 'bold' }}
         rightElement={
-            <TouchableOpacity onPress={()=>{this.props.navigation.navigate("ReceiverDetails", {"details":item})}} style={styles.button}>
+            <TouchableOpacity style={styles.button}>
               <Text style={{color:'#ffff'}}>View</Text>
             </TouchableOpacity>
           }
@@ -54,19 +54,19 @@ export default class BookDonateScreen extends Component{
   render(){
     return(
       <View style={{flex:1}}>
-        <MyHeader title="Donate Books"/>
-        <View style={{flex:1}}>
+       
+        <View>
           {
-            this.state.requestedBooksList.length === 0
+            this.state.donationList.length === 0
             ?(
               <View style={styles.subContainer}>
-                <Text style={{ fontSize: 20}}>List Of All Requested Books</Text>
+                <Text style={{ fontSize: 20}}>List Of All Donors</Text>
               </View>
             )
             :(
               <FlatList
                 keyExtractor={this.keyExtractor}
-                data={this.state.requestedBooksList}
+                data={this.state.donationList}
                 renderItem={this.renderItem}
               />
             )
@@ -86,10 +86,10 @@ const styles = StyleSheet.create({
   },
   button:{
     width:100,
-    height:30,
+    height:40,
     justifyContent:'center',
     alignItems:'center',
-    backgroundColor:"#ff5722",
+    backgroundColor:"#bfebff",
     shadowColor: "#000",
     shadowOffset: {
        width: 0,
